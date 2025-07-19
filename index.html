@@ -8,9 +8,29 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  
+  <!-- Add this in the head section -->
+<link rel="stylesheet" href="https://unpkg.com/lucide@latest/dist/lucide.min.css">
+  
+  
   <style>
   
   
+      /* ===== BASE STYLES ===== */
+:root {
+    --primary: #df1783;
+    --secondary: #8338ec;
+    --accent: #ff006e;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --border: #e2e8f0;
+    --column-bg: #f1f5f9;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --radius: 8px;
+}
+  
+
     .custom-image-widget {
       position: fixed !important;
       top: 50px !important;
@@ -37,6 +57,7 @@
       font-family: 'Poppins', sans-serif;
       margin: 50px;
       max-width: 100%;
+      background-color: #f8fafc;
     }
     #bookmark-tool {
       max-width: 600px;
@@ -77,7 +98,14 @@
       cursor: pointer;
       border: 1px solid #ccc;
     }
-    button {
+    
+     h1 {
+    font-size: 28px;
+    font-weight: 600;
+    }
+    
+    
+  button {
       background-color: #df1783;
       color: white;
       border: none;
@@ -88,7 +116,10 @@
       box-sizing: border-box;
       font-size: 18px;
       cursor: pointer;
+      font-weight: 600;
     }
+    
+    
     .bookmark p {
       margin: 5px 0;
     }
@@ -160,38 +191,146 @@
     .dropdown.active .dropdown-content {
       display: block;
     }
+    
+    /* ===== FOOTER ===== */
+.footer {
+    margin-top: 20px;
+    padding: 1rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    text-align: center;
+    width: 100%;
+    border-radius: 7px;
+    z-index: 10;
+}
+
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0;
+    flex-wrap: wrap;
+    padding: 0.25rem;
+}
+
+.social-link {
+    color: var(--text-light);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.social-link:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+
+.bebell-footer p {
+    align-items: center;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 30px;
+}
+
+.bebell-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.bebell-link:hover {
+    color: #df1783;
+}
+    
+
+    
   </style>
 </head>
 <body>
 
 
   <div class="custom-image-widget" style="position: relative; display: inline-block;">
-    <a href="https://bebell-digital-solutions.github.io/bookmark-page/">
+    <a href="https://bebell-digital-solutions.github.io/bookmark-page/espanol">
       <img class="custom-image" 
-           src="https://bucket.mlcdn.com/a/3336/3336910/images/2891bb0a192c808fe1bb53e3905fc787957c2085.png" 
-           alt="Traducción al Inglés"
+           src="https://bucket.mlcdn.com/a/3336/3336910/images/138f14304ea21715dfae64ae5fe1d71b08c2d451.png" 
+           alt="English Version"
            style="display: block;">
     </a>
   </div>
 
 
-
-
-
-
-
   <div id="bookmark-tool">
-    <h1>Fuentes Favoritos</h1>
-    <p>Guarda y organiza tus enlaces favoritos de manera fácil y rápida.<br>N.B. Asegúrate de que tu enlace tenga "https://" al inicio</p>
-    <input type="text" id="url-input" placeholder="Ingresar Dirección URL">
-    <input type="text" id="tags-input" placeholder="Agregar Etiquetas (separadas por coma)">
-    <button id="save-button">Guardar Fuente</button>
+    <h1>🔗 Links Manager</h1>
+    <p>Save and organize your favorite links easily and quickly.<br>Note: Make sure your link has "https://" at the beginning</p>
+    <input type="text" id="url-input" placeholder="Enter URL">
+    <input type="text" id="tags-input" placeholder="Add Tags (comma separated)">
+    <button id="save-button">Save Source</button>
     <div class="dropdown">
-      <button class="dropdown-button">Mostrar Etiquetas</button>
+      <button class="dropdown-button">Show Tags</button>
       <div id="tags-container" class="dropdown-content"></div>
     </div>
     <div id="bookmarks-container"></div>
   </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="social-links">
+            <a href="https://bebell-digital-solutions.github.io/checklist-creator/english/" class="social-link" target="_blank" rel="noopener">
+                <span>☑️</span> Checklist Creator
+            </a>
+            <a href="https://bebell-digital-solutions.github.io/tasks-manager/english/" class="social-link" target="_blank" rel="noopener">
+                <span>🎯</span> Tasks Manager
+            </a>
+            <a href="https://bebell-digital-solutions.github.io/bookmark-page/english/" class="social-link" target="_blank" rel="noopener">
+                <span>🔗</span> Links Manager
+            </a>
+            <a href="https://bebell-digital-solutions.github.io/magic-toolbox-aplicacion/" class="social-link" target="_blank" rel="noopener">
+                <span>🧰</span> Magic Toolbox
+            </a>
+            <a href="mailto:support@bebelldigitalsolutions.com" class="social-link" target="_blank" rel="noopener">
+                <span>📨</span> Technical Support
+            </a>
+        </div>
+    </footer>
+    
+    
+      <div class="bebell-footer">
+        <p>
+            Developed with 💖 by  
+            <a href="https://bebelldigitalsolutions.com" class="bebell-link">
+                Bebell Digital Solutions.
+            </a>.<br>Copyright © 2024 • All rights reserved.</p>
+    </div>
+
+  
+  
+  
+  
+  
 
   <script>
     // Array to store bookmarks
@@ -210,12 +349,12 @@
       }
 
       if (!url) {
-        alert("¡Error! Por favor ingrese una URL.");
+        alert("Error! Please enter a URL.");
         return;
       }
 
       if (bookmarks.some(bookmark => bookmark.url === url)) {
-        alert("Este enlace ya ha sido guardado.");
+        alert("This link has already been saved.");
         return;
       }
 
@@ -292,7 +431,7 @@
       tagsContainer.innerHTML = "";
       const allButton = document.createElement("button");
       allButton.className = "tag-button";
-      allButton.textContent = "Todos";
+      allButton.textContent = "All";
       allButton.addEventListener("click", () => {
         displayBookmarks();
         document.querySelector(".dropdown").classList.remove("active");
