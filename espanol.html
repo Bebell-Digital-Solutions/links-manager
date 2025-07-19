@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookmark Tool</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  
+  <!-- Add this in the head section -->
+<link rel="stylesheet" href="https://unpkg.com/lucide@latest/dist/lucide.min.css">
+  
+  
+  <style>
+  
+  
+      /* ===== ESTILOS BASE ===== */
+:root {
+    --primary: #df1783;
+    --secondary: #8338ec;
+    --accent: #ff006e;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --border: #e2e8f0;
+    --column-bg: #f1f5f9;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --radius: 8px;
+}
+  
+
+    .custom-image-widget {
+      position: fixed !important;
+      top: 50px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      right: 0px;
+      z-index: 999;
+    }
+    
+    .custom-image {
+      width: 70px;
+      height: auto;
+      transition: transform 0.2s;
+    }
+    
+    .custom-image-widget:hover .custom-image {
+      transform: scale(1.10);
+    }
+
+
+  
+  
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 50px;
+      max-width: 100%;
+      background-color: #f8fafc;
+    }
+    
+    
+    h1 {
+    font-size: 28px;
+    font-weight: 600;
+    }
+    
+    
+    #bookmark-tool {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    
+    
+    #bookmarks-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 50px;
+      font-size: 14px;
+    }
+    .bookmark {
+      position: relative;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      text-align: center;
+      padding: 0;
+      padding-bottom: 8px;
+    }
+    .bookmark img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: 0;
+    }
+    .bookmark a {
+      text-decoration: none;
+      color: inherit;
+    }
+    input {
+      padding: 15px 20px;
+      border-radius: 50px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 16px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #df1783;
+      color: white;
+      border: none;
+      padding: 15px 20px;
+      border-radius: 50px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .bookmark p {
+      margin: 5px 0;
+    }
+    .delete-icon {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      cursor: pointer;
+      font-size: 15px;
+      color: #df1783;
+      background-color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    .delete-icon:hover {
+      color: #b31265;
+      background-color: #f0f0f0;
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      margin-top: 10px;
+    }
+    .dropdown-button {
+      background-color: #df1783;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .dropdown-button:hover {
+      background-color: #b31265;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+      padding: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .dropdown-content .tag-button {
+      display: block;
+      background-color: #df1783;
+      color: white;
+      border: none;
+      padding: 5px 15px;
+      border-radius: 50px;
+      font-size: 12px;
+      cursor: pointer;
+      margin: 5px 0;
+      text-align: left;
+      width: 100%;
+    }
+    .dropdown-content .tag-button:hover {
+      background-color: #b31265;
+    }
+    .dropdown.active .dropdown-content {
+      display: block;
+    }
+    
+    /* ===== PIE DE PÁGINA ===== */
+.footer {
+    margin-top: 20px;
+    padding: 1rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    text-align: center;
+    width: 100%;
+    border-radius: 7px;
+    z-index: 10;
+}
+
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0;
+    flex-wrap: wrap;
+    padding: 0.25rem;
+}
+
+.social-link {
+    color: var(--text-light);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.social-link:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+
+.bebell-footer p {
+    align-items: center;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 30px;
+}
+
+.bebell-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.bebell-link:hover {
+    color: #df1783;
+}
+    
+
+    
+  </style>
+</head>
+<body>
+
+
+  <div class="custom-image-widget" style="position: relative; display: inline-block;">
+    <a href="https://bebell-digital-solutions.github.io/bookmark-page/">
+      <img class="custom-image" 
+           src="https://bucket.mlcdn.com/a/3336/3336910/images/2891bb0a192c808fe1bb53e3905fc787957c2085.png" 
+           alt="Traducción al Inglés"
+           style="display: block;">
+    </a>
+  </div>
+
+
+  <div id="bookmark-tool">
+    <h1>🔗 Gestor de Enlaces</h1>
+    <p>Guarda y organiza tus enlaces favoritos de manera fácil y rápida.<br>N.B. Asegúrate de que tu enlace tenga "https://" al inicio</p>
+    <input type="text" id="url-input" placeholder="Ingresar Dirección URL">
+    <input type="text" id="tags-input" placeholder="Agregar Etiquetas (separadas por coma)">
+    <button id="save-button">Guardar Fuente</button>
+    <div class="dropdown">
+      <button class="dropdown-button">Mostrar Etiquetas</button>
+      <div id="tags-container" class="dropdown-content"></div>
+    </div>
+    <div id="bookmarks-container"></div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+    <!-- Pie de página -->
+    <footer class="footer">
+        <div class="social-links">
+            <a href="https://bebell-digital-solutions.github.io/checklist-creator/espanol/" class="social-link" target="_blank" rel="noopener">
+                <span>☑️</span> Creador de Checklist
+            </a>
+            <a href="https://bebell-digital-solutions.github.io/tasks-manager/espanol/" class="social-link" target="_blank" rel="noopener">
+                <span>🎯</span> Gestor de Tareas
+            </a>
+            <a href="https://bebell-digital-solutions.github.io/bookmark-page/espanol/" class="social-link" target="_blank" rel="noopener">
+                <span>🔗</span> Gestor de Enlaces
+            </a>
+            <a href="https://bebell-digital-solutions.github.io/magic-toolbox-aplicacion/" class="social-link" target="_blank" rel="noopener">
+                <span>🧰</span> Magic Toolbox
+            </a>
+            <a href="mailto:soporte@bebelldigitalsolutions.com" class="social-link" target="_blank" rel="noopener">
+                <span>📨</span> Soporte Técnico
+            </a>
+        </div>
+    </footer>
+    
+    
+      <div class="bebell-footer">
+        <p>
+            Desarrollado con 💖 por  
+            <a href="https://bebelldigitalsolutions.com" class="bebell-link">
+                Bebell Digital Solutions.
+            </a>.<br>Copyright © 2024 • Todos los derechos reservados.</p>
+    </div>
+
+  
+  
+  
+  
+  
+
+  <script>
+    // Array to store bookmarks
+    let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+
+    // Function to save a bookmark
+    document.getElementById("save-button").addEventListener("click", function () {
+      const url = document.getElementById("url-input").value;
+      const tags = document.getElementById("tags-input").value
+        .split(",")
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+
+      if (tags.length === 0) {
+        tags.push("blank");
+      }
+
+      if (!url) {
+        alert("¡Error! Por favor ingrese una URL.");
+        return;
+      }
+
+      if (bookmarks.some(bookmark => bookmark.url === url)) {
+        alert("Este enlace ya ha sido guardado.");
+        return;
+      }
+
+      // Fetch thumbnail using Link Preview API
+      const apiKey = "cf897b0182aba8e0a03631fb87448236";
+      fetch(`https://api.linkpreview.net/?key=${apiKey}&q=${url}`)
+        .then(response => response.json())
+        .then(data => {
+          const bookmark = {
+            url: url,
+            thumbnail: data.image || "https://via.placeholder.com/300x169?text=No+Thumbnail",
+            tags: tags,
+            date: new Date()
+          };
+
+          bookmarks.push(bookmark);
+          localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+          document.getElementById("url-input").value = "";
+          document.getElementById("tags-input").value = "";
+          displayBookmarks();
+          displayTags();
+          triggerConfetti();
+        })
+        .catch(error => {
+          console.error("Error fetching thumbnail:", error);
+          const bookmark = {
+            url: url,
+            thumbnail: "https://via.placeholder.com/300x169?text=No+Thumbnail",
+            tags: tags,
+            date: new Date()
+          };
+          bookmarks.push(bookmark);
+          localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+          document.getElementById("url-input").value = "";
+          document.getElementById("tags-input").value = "";
+          displayBookmarks();
+          displayTags();
+          triggerConfetti();
+        });
+    });
+
+    // Function to display bookmarks
+    function displayBookmarks(filteredBookmarks = bookmarks) {
+      const container = document.getElementById("bookmarks-container");
+      container.innerHTML = "";
+      filteredBookmarks.sort((a, b) => b.date - a.date);
+      filteredBookmarks.forEach((bookmark, index) => {
+        const bookmarkElement = document.createElement("div");
+        bookmarkElement.className = "bookmark";
+        bookmarkElement.innerHTML = `
+          <span class="delete-icon" onclick="deleteBookmark(${index})">×</span>
+          <a href="${bookmark.url}" target="_blank">
+            <img src="${bookmark.thumbnail}" alt="${bookmark.url}">
+            <p>${bookmark.url}</p>
+            <p><strong>Tags:</strong> ${bookmark.tags.join(", ")}</p>
+            <p><strong>Date:</strong> ${bookmark.date.toLocaleString()}</p>
+          </a>
+        `;
+        container.appendChild(bookmarkElement);
+      });
+    }
+
+    // Function to delete a bookmark
+    function deleteBookmark(index) {
+      bookmarks.splice(index, 1);
+      localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+      displayBookmarks();
+      displayTags();
+    }
+
+    // Function to display tags in the dropdown
+    function displayTags() {
+      const tagsContainer = document.getElementById("tags-container");
+      tagsContainer.innerHTML = "";
+      const allButton = document.createElement("button");
+      allButton.className = "tag-button";
+      allButton.textContent = "Todos";
+      allButton.addEventListener("click", () => {
+        displayBookmarks();
+        document.querySelector(".dropdown").classList.remove("active");
+      });
+      tagsContainer.appendChild(allButton);
+      const allTags = [...new Set(bookmarks.flatMap(bookmark => bookmark.tags))];
+      allTags.forEach(tag => {
+        const tagButton = document.createElement("button");
+        tagButton.className = "tag-button";
+        tagButton.textContent = tag;
+        tagButton.addEventListener("click", () => {
+          filterByTag(tag);
+          document.querySelector(".dropdown").classList.remove("active");
+        });
+        tagsContainer.appendChild(tagButton);
+      });
+    }
+
+    // Function to filter bookmarks by tag
+    function filterByTag(tag) {
+      const filteredBookmarks = bookmarks.filter(bookmark =>
+        bookmark.tags.includes(tag)
+      );
+      displayBookmarks(filteredBookmarks);
+    }
+
+    // Show/hide dropdown
+    document.querySelector(".dropdown-button").addEventListener("click", function () {
+      const dropdown = document.querySelector(".dropdown");
+      dropdown.classList.toggle("active");
+    });
+
+    // Load bookmarks and tags when the page loads
+    displayBookmarks();
+    displayTags();
+
+    // Confetti function
+    function triggerConfetti() {
+      confetti({
+        particleCount: 300,
+        spread: 90,
+        origin: {
+          x: 0.5,
+          y: 0.5
+        }
+      });
+    }
+  </script>
+
+  <!-- Confetti Script -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</body>
+</html>
