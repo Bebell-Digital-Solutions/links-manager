@@ -337,6 +337,23 @@
 .bebell-link:hover {
     color: var(--primary);
 }
+
+
+    .https-badge {
+  background-color: #df1783;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: monospace;
+  margin: 0 2px;
+}
+
+
+
+
+
+    
     
   </style>
  
@@ -406,7 +423,10 @@
 
   <div id="bookmark-tool">
     <h1>🔗 Links Manager</h1>
-    <p>Save and organize your favorite links quickly and easily.<br>Note: Make sure your link includes "https://" at the beginning</p>
+    <p>Save and organize your favorite links quickly and easily.<br>
+    <p>Guarda y organiza tus enlaces favoritos de manera fácil y rápida.<br>
+<strong>Note:</strong> Make sure your link includes <span class="https-badge">https://</span> at the beginning</p>
+
     
     <input type="text" id="url-input" placeholder="Enter URL">
     <input type="text" id="tags-input" placeholder="Add Tags (comma separated)">
