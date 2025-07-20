@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookmark Tool</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  
+  <!-- Add this in the head section -->
+<link rel="stylesheet" href="https://unpkg.com/lucide@latest/dist/lucide.min.css">
+  
+  <!-- jsPDF library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  
+  <style>
+      /* ===== ESTILOS BASE ===== */
+:root {
+    --primary: #df1783;
+    --secondary: #8338ec;
+    --accent: #ff006e;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --border: #e2e8f0;
+    --column-bg: #f1f5f9;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --radius: 8px;
+    --text-light: #64748b;
+}
+
+[data-theme="dark"] {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --border: #334155;
+    --column-bg: #1e293b;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+    --primary: #df1783;
+    --secondary: #8338ec;
+    --accent: #f472b6;
+    --text-light: #94a3b8;
+}
+
+    .custom-image-widget {
+      position: fixed !important;
+      top: 50px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      right: 0px;
+      z-index: 999;
+    }
+    
+    .custom-image {
+      width: 70px;
+      height: auto;
+      transition: transform 0.2s;
+    }
+    
+    .custom-image-widget:hover .custom-image {
+      transform: scale(1.10);
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      margin: 20px;
+      max-width: 100%;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+/* Add this at the top of your style section */
+.main-container {
+  max-width: 860px;
+  margin: 0 auto;
+  background: var(--card);
+  padding: 0 60px;
+  border-radius: 7px;
+  box-shadow: var(--shadow);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+    h1 {
+    font-size: 28px;
+    font-weight: 600;
+    }
+   
+    #bookmark-tool {
+    padding-top: 30px;
+      max-width: 800px;
+      margin: 0 auto;
+      min-height: 680px;
+    }
+    
+    #bookmarks-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 50px;
+      font-size: 14px;
+    }
+    .bookmark {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      text-align: center;
+      padding: 0;
+      padding-bottom: 8px;
+      background-color: var(--card);
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    .bookmark img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: 0;
+    }
+    .bookmark a {
+      text-decoration: none;
+      color: inherit;
+    }
+    input {
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 16px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background-color: var(--card);
+      color: var(--text);
+      transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+    }
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 7px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+    .bookmark p {
+      margin: 5px 0;
+    }
+    .delete-icon {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      cursor: pointer;
+      font-size: 15px;
+      color: var(--primary);
+      background-color: var(--card);
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .delete-icon:hover {
+      color: var(--accent);
+      background-color: var(--column-bg);
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      margin-top: 10px;
+    }
+    .dropdown-button {
+  background-image: linear-gradient(to right, var(--primary), var(--accent));
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dropdown-button:hover {
+  background-image: linear-gradient(to right, var(--accent), var(--primary));
+  transform: translateY(-1px);
+}
+   
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      box-shadow: var(--shadow);
+      z-index: 1;
+      padding: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    .dropdown-content .tag-button {
+      display: block;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 5px 15px;
+      border-radius: 50px;
+      font-size: 12px;
+      cursor: pointer;
+      margin: 5px 0;
+      text-align: left;
+      width: 100%;
+    }
+    .dropdown-content .tag-button:hover {
+      background-color: var(--accent);
+    }
+    .dropdown.active .dropdown-content {
+      display: block;
+    }
+    
+    /* Action buttons */
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin: 15px 0;
+      padding-top: 30px;
+    }
+    
+    .action-button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 7px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+    
+    .action-button.pdf {
+      background-color: #d275b2;
+      color: white;
+    }
+    
+    .action-button.csv {
+      background-color: #d275b2;
+      color: white;
+    }
+    
+    .action-button.theme {
+      background-color: #d275b2;
+      color: white;
+    }
+    
+    .action-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* ===== PIE DE PÁGINA ===== */
+.footer {
+  margin-top: 20px;
+  padding: 1rem;
+  background: var(--bg);
+  border: 0px solid var(--border);
+  text-align: center;
+  border-radius: 7px;
+  z-index: 10;
+  transition: background-color 0.3s;
+}
+
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0;
+    flex-wrap: wrap;
+    padding: 0.25rem;
+}
+
+.social-link {
+    color: var(--text-light);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 7px;
+    background: var(--card);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    box-shadow: var(--shadow);
+}
+
+.social-link:hover {
+    color: var(--text);
+    background: var(--card);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+
+.bebell-footer p {
+    align-items: center;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 20px;
+    padding-bottom: 30px;
+    color: var(--text-light);
+}
+
+.bebell-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.bebell-link:hover {
+    color: var(--primary);
+}
+    
+  </style>
+ 
+        <!-- Widget BACK-TO-TOP -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const backToTop = document.createElement("div");
+        backToTop.id = "back-to-top";
+        backToTop.style.position = "fixed";
+        backToTop.style.bottom = "30px";
+        backToTop.style.right = "30px";
+        backToTop.style.display = "none";
+        backToTop.style.cursor = "pointer";
+        backToTop.style.zIndex = "9999";
+
+        const backToTopImg = document.createElement("img");
+        backToTopImg.src = "https://bucket.mlcdn.com/a/3336/3336910/images/29840e122b950f88fdca23072015101b427a9112.png";
+        backToTopImg.alt = "Volver arriba";
+        backToTopImg.style.width = "40px";
+        backToTopImg.style.height = "40px";
+        
+        backToTop.appendChild(backToTopImg);
+        document.body.appendChild(backToTop);
+
+        window.addEventListener("scroll", function () {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                backToTop.style.display = "block";
+            } else {
+                backToTop.style.display = "none";
+            }
+        });
+
+        backToTop.addEventListener("click", function () {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        });
+    });
+    </script>
+    
+</head>
+<body>
+
+  <div class="custom-image-widget" style="position: relative; display: inline-block;">
+    <a href="https://bebell-digital-solutions.github.io/bookmark-page/">
+      <img class="custom-image" 
+           src="https://bucket.mlcdn.com/a/3336/3336910/images/2891bb0a192c808fe1bb53e3905fc787957c2085.png" 
+           alt="Traducción al Inglés"
+           style="display: block;">
+    </a>
+  </div>
+
+<div class="main-container">
+
+   <div class="action-buttons">
+      <button class="action-button pdf" id="export-pdf">
+        <i class="fas fa-file-pdf"></i> PDF
+      </button>
+      <button class="action-button csv" id="export-csv">
+        <i class="fas fa-file-csv"></i> CSV
+      </button>
+      <button class="action-button theme" id="theme-toggle">
+        <i class="fas fa-moon"></i> Tema
+      </button>
+    </div>
+
+
+
+  <div id="bookmark-tool">
+    <h1>🔗 Gestor de Enlaces</h1>
+    <p>Guarda y organiza tus enlaces favoritos de manera fácil y rápida.<br>N.B. Asegúrate de que tu enlace tenga "https://" al inicio</p>
+    
+ 
+    
+    <input type="text" id="url-input" placeholder="Ingresar Dirección URL">
+    <input type="text" id="tags-input" placeholder="Agregar Etiquetas (separadas por coma)">
+    <button id="save-button">Guardar Fuente</button>
+    <div class="dropdown">
+      <button class="dropdown-button">Mostrar Etiquetas</button>
+      <div id="tags-container" class="dropdown-content"></div>
+    </div>
+    <div id="bookmarks-container"></div>
+  </div>
+</div>
+
+   <!-- Pie de página -->
+    <footer class="footer">
+        <div class="social-links">
+            <a href="https://bebell-digital-solutions.github.io/checklist-creator/espanol" class="social-link" rel="noopener">
+                <span>☑️</span> Creador de Checklist
+            </a>
+            <a href="https://bebell-digital-solutions.github.io/tasks-manager/espanol" class="social-link" rel="noopener">
+                <span>🎯</span> Gestor de Tareas
+            </a>
+            <a href="https://bebell-digital-solutions.github.io/bookmark-page/es-v03" class="social-link" rel="noopener">
+                <span>🔗</span> Gestor de Enlaces
+            </a>
+            <a href="https://bebell-digital-solutions.github.io/magic-toolbox-aplicacion/" class="social-link" rel="noopener">
+                <span>🧰</span> Magic Toolbox
+            </a>
+            <a href="mailto:soporte@bebelldigitalsolutions.com" class="social-link"  rel="noopener">
+                <span>📨</span> Soporte Técnico
+            </a>
+        </div>
+    </footer>
+
+   <div class="bebell-footer">
+        <p>
+            Desarrollado con 💖 por  
+            <a href="https://bebelldigitalsolutions.com" class="bebell-link">
+                Bebell Digital Solutions.
+            </a>.<br>Copyright © 2024 • Todos los derechos reservados.</p>
+    </div>
+
+  <script>
+    // Array to store bookmarks
+    let bookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+    
+// Theme management
+const themeToggle = document.getElementById('theme-toggle');
+
+// Set initial theme from localStorage or default to light
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+updateThemeIcon();
+
+// Theme toggle event
+themeToggle.addEventListener('click', () => {
+  // Get current theme from the HTML element
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  
+  // Apply new theme
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  updateThemeIcon();
+});
+
+function updateThemeIcon() {
+  const icon = themeToggle.querySelector('i');
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  
+  if (currentTheme === 'dark') {
+    icon.classList.remove('fa-moon');
+    icon.classList.add('fa-sun');
+    themeToggle.title = "Switch to Light Mode";
+  } else {
+    icon.classList.remove('fa-sun');
+    icon.classList.add('fa-moon');
+    themeToggle.title = "Switch to Dark Mode";
+  }
+}
+    // Function to save a bookmark
+    document.getElementById("save-button").addEventListener("click", function () {
+      const url = document.getElementById("url-input").value;
+      const tags = document.getElementById("tags-input").value
+        .split(",")
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+
+      if (tags.length === 0) {
+        tags.push("blank");
+      }
+
+      if (!url) {
+        alert("¡Error! Por favor ingrese una URL.");
+        return;
+      }
+
+      if (bookmarks.some(bookmark => bookmark.url === url)) {
+        alert("Este enlace ya ha sido guardado.");
+        return;
+      }
+
+      // Fetch thumbnail using Link Preview API
+      const apiKey = "cf897b0182aba8e0a03631fb87448236";
+      fetch(`https://api.linkpreview.net/?key=${apiKey}&q=${url}`)
+        .then(response => response.json())
+        .then(data => {
+          const bookmark = {
+            url: url,
+            thumbnail: data.image || "https://via.placeholder.com/300x169?text=No+Thumbnail",
+            tags: tags,
+            date: new Date()
+          };
+
+          bookmarks.push(bookmark);
+          localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+          document.getElementById("url-input").value = "";
+          document.getElementById("tags-input").value = "";
+          displayBookmarks();
+          displayTags();
+          triggerConfetti();
+        })
+        .catch(error => {
+          console.error("Error fetching thumbnail:", error);
+          const bookmark = {
+            url: url,
+            thumbnail: "https://via.placeholder.com/300x169?text=No+Thumbnail",
+            tags: tags,
+            date: new Date()
+          };
+          bookmarks.push(bookmark);
+          localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+          document.getElementById("url-input").value = "";
+          document.getElementById("tags-input").value = "";
+          displayBookmarks();
+          displayTags();
+          triggerConfetti();
+        });
+    });
+
+    // Function to display bookmarks
+    function displayBookmarks(filteredBookmarks = bookmarks) {
+      const container = document.getElementById("bookmarks-container");
+      container.innerHTML = "";
+      filteredBookmarks.sort((a, b) => b.date - a.date);
+      filteredBookmarks.forEach((bookmark, index) => {
+        const bookmarkElement = document.createElement("div");
+        bookmarkElement.className = "bookmark";
+        bookmarkElement.innerHTML = `
+          <span class="delete-icon" onclick="deleteBookmark(${index})">×</span>
+          <a href="${bookmark.url}" target="_blank">
+            <img src="${bookmark.thumbnail}" alt="${bookmark.url}">
+            <p>${bookmark.url}</p>
+            <p><strong>Tags:</strong> ${bookmark.tags.join(", ")}</p>
+            <p><strong>Date:</strong> ${bookmark.date.toLocaleString()}</p>
+          </a>
+        `;
+        container.appendChild(bookmarkElement);
+      });
+    }
+
+    // Function to delete a bookmark
+    function deleteBookmark(index) {
+      bookmarks.splice(index, 1);
+      localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+      displayBookmarks();
+      displayTags();
+    }
+
+    // Function to display tags in the dropdown
+    function displayTags() {
+      const tagsContainer = document.getElementById("tags-container");
+      tagsContainer.innerHTML = "";
+      const allButton = document.createElement("button");
+      allButton.className = "tag-button";
+      allButton.textContent = "Todos";
+      allButton.addEventListener("click", () => {
+        displayBookmarks();
+        document.querySelector(".dropdown").classList.remove("active");
+      });
+      tagsContainer.appendChild(allButton);
+      const allTags = [...new Set(bookmarks.flatMap(bookmark => bookmark.tags))];
+      allTags.forEach(tag => {
+        const tagButton = document.createElement("button");
+        tagButton.className = "tag-button";
+        tagButton.textContent = tag;
+        tagButton.addEventListener("click", () => {
+          filterByTag(tag);
+          document.querySelector(".dropdown").classList.remove("active");
+        });
+        tagsContainer.appendChild(tagButton);
+      });
+    }
+
+    // Function to filter bookmarks by tag
+    function filterByTag(tag) {
+      const filteredBookmarks = bookmarks.filter(bookmark =>
+        bookmark.tags.includes(tag)
+      );
+      displayBookmarks(filteredBookmarks);
+    }
+
+    // Show/hide dropdown
+    document.querySelector(".dropdown-button").addEventListener("click", function () {
+      const dropdown = document.querySelector(".dropdown");
+      dropdown.classList.toggle("active");
+    });
+
+    // Load bookmarks and tags when the page loads
+    displayBookmarks();
+    displayTags();
+
+    // Confetti function
+    function triggerConfetti() {
+      confetti({
+        particleCount: 300,
+        spread: 90,
+        origin: {
+          x: 0.5,
+          y: 0.5
+        }
+      });
+    }
+    
+    
+    
+    
+    
+    // Export to PDF function
+    document.getElementById('export-pdf').addEventListener('click', exportToPDF);
+    
+    function exportToPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      // Add title
+      doc.setFontSize(18);
+      doc.text('Mis Marcadores Guardados', 14, 15);
+      
+      // Prepare data for the table
+      const tableData = bookmarks.map(bookmark => [
+        bookmark.url,
+        bookmark.tags.join(', '),
+        bookmark.date.toLocaleString()
+      ]);
+      
+      // Add table
+      doc.autoTable({
+        head: [['URL', 'Etiquetas', 'Fecha']],
+        body: tableData,
+        startY: 25,
+        styles: {
+          cellPadding: 5,
+          fontSize: 10,
+          valign: 'middle',
+          halign: 'left',
+        },
+        headStyles: {
+          fillColor: [223, 23, 131], // Bebell pink
+          textColor: 255,
+          fontStyle: 'bold'
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245]
+        },
+        margin: { top: 25 }
+      });
+      
+      
+      
+      
+      
+      // Save the PDF
+      doc.save('mis-marcadores.pdf');
+    }
+    
+    // Export to CSV function
+    document.getElementById('export-csv').addEventListener('click', exportToCSV);
+    
+    function exportToCSV() {
+      if (bookmarks.length === 0) {
+        alert('No hay marcadores para exportar.');
+        return;
+      }
+      
+      // Create CSV content
+      let csvContent = "data:text/csv;charset=utf-8,";
+      
+      // Add header
+      csvContent += "URL,Etiquetas,Fecha\n";
+      
+      // Add data rows
+      bookmarks.forEach(bookmark => {
+        const row = [
+          `"${bookmark.url}"`,
+          `"${bookmark.tags.join(', ')}"`,
+          `"${bookmark.date.toLocaleString()}"`
+        ].join(',');
+        csvContent += row + "\n";
+      });
+      
+      // Create download link
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "mis-marcadores.csv");
+      document.body.appendChild(link);
+      
+      // Trigger download
+      link.click();
+      
+      // Clean up
+      document.body.removeChild(link);
+    }
+  </script>
+
+  <!-- Confetti Script -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</body>
+</html>
