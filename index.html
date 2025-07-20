@@ -13,10 +13,11 @@
 <link rel="stylesheet" href="https://unpkg.com/lucide@latest/dist/lucide.min.css">
   
   
+  
   <style>
   
   
-      /* ===== BASE STYLES ===== */
+      /* ===== ESTILOS BASE ===== */
 :root {
     --primary: #df1783;
     --secondary: #8338ec;
@@ -54,15 +55,43 @@
   
   
     body {
-      font-family: 'Poppins', sans-serif;
-      margin: 50px;
+      font-family: 'Lato', sans-serif;
+      margin: 20px;
       max-width: 100%;
       background-color: #f8fafc;
     }
-    #bookmark-tool {
-      max-width: 600px;
-      margin: 0 auto;
+
+
+/* Add this at the top of your style section */
+.main-container {
+  max-width: 860px;
+  margin: 0 auto;
+  background: white;
+  padding: 60px;
+  border-radius: 7px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+    
+    
+    
+    h1 {
+    font-size: 28px;
+    font-weight: 600;
     }
+
+   
+    
+    
+    #bookmark-tool {
+    padding-top: 50px;
+      max-width: 800px;
+      margin: 0 auto;
+      min-height: 680px;
+    }
+    
+    
+    
     #bookmarks-container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -90,7 +119,7 @@
     }
     input {
       padding: 15px 20px;
-      border-radius: 50px;
+      border-radius: 8px;
       margin: 5px 0;
       width: 100%;
       box-sizing: border-box;
@@ -98,19 +127,12 @@
       cursor: pointer;
       border: 1px solid #ccc;
     }
-    
-     h1 {
-    font-size: 28px;
-    font-weight: 600;
-    }
-    
-    
-  button {
+    button {
       background-color: #df1783;
       color: white;
       border: none;
-      padding: 15px 20px;
-      border-radius: 50px;
+      padding: 12px 20px;
+      border-radius: 7px;
       margin: 5px 0;
       width: 100%;
       box-sizing: border-box;
@@ -118,8 +140,6 @@
       cursor: pointer;
       font-weight: 600;
     }
-    
-    
     .bookmark p {
       margin: 5px 0;
     }
@@ -149,17 +169,21 @@
       margin-top: 10px;
     }
     .dropdown-button {
-      background-color: #df1783;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 50px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-    .dropdown-button:hover {
-      background-color: #b31265;
-    }
+  background-image: linear-gradient(to right, #df1783, #b31265);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease; /* Add smooth transition for hover effect */
+}
+
+.dropdown-button:hover {
+  background-image: linear-gradient(to right, #b31265, #df1783);
+  transform: translateY(-1px); /* Optional: Add slight lift on hover */
+}
+   
     .dropdown-content {
       display: none;
       position: absolute;
@@ -192,16 +216,16 @@
       display: block;
     }
     
-    /* ===== FOOTER ===== */
+    /* ===== PIE DE PÁGINA ===== */
 .footer {
-    margin-top: 20px;
-    padding: 1rem;
-    background: var(--card);
-    border: 1px solid var(--border);
-    text-align: center;
-    width: 100%;
-    border-radius: 7px;
-    z-index: 10;
+  margin-top: 20px;
+  padding: 1rem;
+  background: #f8fafc;
+  border: 0px solid var(--border);
+  text-align: center;
+  /* Remove width: 100%; */
+  border-radius: 7px;
+  z-index: 10;
 }
 
 
@@ -221,8 +245,8 @@
     align-items: center;
     gap: 0.25rem;
     padding: 0.35rem 0.75rem;
-    border-radius: var(--radius);
-    background: rgba(255, 255, 255, 0.03);
+    border-radius: 7px;
+    background: white;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     transition: all 0.3s ease;
@@ -232,7 +256,7 @@
 
 .social-link:hover {
     color: var(--text);
-    background: rgba(255, 255, 255, 0.05);
+    background: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
@@ -244,7 +268,8 @@
     font-size: 12px;
     line-height: 1.5;
     margin: 0;
-    padding: 30px;
+    padding: 20px;
+    padding-bottom: 30px;
 }
 
 .bebell-link {
@@ -260,9 +285,9 @@
 
     
   </style>
-  
-  
-   
+
+
+ 
         <!-- Widget BACK-TO-TOP -->
     <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -302,7 +327,8 @@
     </script>
     
     
-  
+
+
   
 </head>
 <body>
@@ -317,7 +343,7 @@
     </a>
   </div>
 
-
+<div class="main-container">
   <div id="bookmark-tool">
     <h1>🔗 Links Manager</h1>
     <p>Save and organize your favorite links easily and quickly.<br>Note: Make sure your link has "https://" at the beginning</p>
@@ -331,7 +357,7 @@
     <div id="bookmarks-container"></div>
   </div>
   
-  
+</div>
   
   
   
